@@ -68,11 +68,6 @@ def hello_world():
 
     global model
 
-    # df = data_frame_from_xlsx("input/MaxD_MinD.xlsx", "MaxD")
-    # for index, row in df.iterrows():
-    #     for i, value in enumerate(row):
-    #         print(df[i][index])
-
     reg(d, 'PC$1', product_range)
     reg(d, 'PV$1', product_range)
 

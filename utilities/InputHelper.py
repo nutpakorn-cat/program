@@ -2,6 +2,7 @@
 import pandas as pd
 import openpyxl
 
+
 def data_frame_from_xlsx(xlsx_file, range_name):
     """ Get a single rectangular region from the specified file.
     range_name can be a standard Excel reference ('Sheet1!A2:B7') or 
@@ -19,27 +20,33 @@ def data_frame_from_xlsx(xlsx_file, range_name):
         full_range = wb.get_named_range(range_name)
         if full_range is None:
             raise ValueError(
-                'Range "{}" not found in workbook "{}".'.format(range_name, xlsx_file)
+                'Range "{}" not found in workbook "{}".'.format(
+                    range_name, xlsx_file)
             )
         # convert to list (openpyxl 2.3 returns a list but 2.4+ returns a generator)
-        destinations = list(full_range.destinations) 
+        destinations = list(full_range.destinations)
         if len(destinations) > 1:
             raise ValueError(
                 'Range "{}" in workbook "{}" contains more than one region.'
                 .format(range_name, xlsx_file)
             )
         ws, reg = destinations[0]
-        # convert to worksheet object (openpyxl 2.3 returns a worksheet object 
+        # convert to worksheet object (openpyxl 2.3 returns a worksheet object
         # but 2.4+ returns the name of a worksheet)
         if isinstance(ws, str):
             ws = wb[ws]
         region = ws[reg]
     # an anonymous user suggested this to catch a single-cell range (untested):
     # if not isinstance(region, 'tuple'): df = pd.DataFrame(region.value)
-    df = pd.DataFrame([cell.value for cell in row] for row in region)
+
+    if not isinstance(region, tuple):
+        df = pd.DataFrame([region.value])
+    else:
+        df = pd.DataFrame([cell.value for cell in row] for row in region)
+
     return df
 
-    
+
 def read_input(input_name):
     file_input = open('input/model-2-input.txt', 'r')
     lines_input = file_input.readlines()

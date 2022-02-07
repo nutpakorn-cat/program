@@ -39,11 +39,14 @@ milking3_range = [1, 10]
 time_range = [1, 36]
 
 
-def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1, -1]):
+def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1]):
 
     global model
 
     df = data_frame_from_xlsx("input/" + file_name, column_name)
+
+    second_variable = 0
+    thrid_variable = 0
 
     for row_index, row in df.iterrows():
         for column_index, value in enumerate(row):
@@ -56,11 +59,24 @@ def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1
                            str(ia[0] + row_index)] == df[column_index][row_index]
                 print("SET " + variable_name + ',' +
                       str(ia[0] + row_index) + " = " + str(df[column_index][row_index]))
-            else:
+            elif (ka[0] == -1):
                 model += d[variable_name + ',' + str(ia[0] + row_index) + ',' + str(
                     ja[0] + column_index)] == df[column_index][row_index]
                 print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
                     ja[0] + column_index) + " = " + str(df[column_index][row_index]))
+            else:
+                print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
+                    ja[0] + second_variable) + ',' + str(ka[0] + thrid_variable) + " = " + str(df[column_index][row_index]))
+                model += d[variable_name + ',' + str(ia[0] + row_index) + ',' + str(
+                    ja[0] + second_variable) + ',' + str(ka[0] + thrid_variable)] == df[column_index][row_index]
+
+                if (thrid_variable == ka[1] - 1):
+                    thrid_variable = 0
+                    second_variable = second_variable + 1
+                else:
+                    thrid_variable = thrid_variable + 1
+        second_variable = 0
+        thrid_variable = 0
 
 
 @app.route('/')
@@ -269,11 +285,14 @@ def hello_world():
                       age3_range, gestation_range)
     read_initial_data('DHerd.xlsx', 'DHerd_l1', 'D1Herd0',
                       age4_range, milking_range)
+    read_initial_data('EHerd.xlsx', 'E1Herd', 'E1Herd0',
+                      age5_range, milkingE_range, gestation_range)
     read_initial_data('DHerd.xlsx', 'DHerd_l2', 'D2Herd0',
                       age6_range, milking2_range)
+    read_initial_data('EHerd.xlsx', 'E2Herd', 'E2Herd0',
+                      age7_range, milkingE2_range, gestation_range)
     read_initial_data('DHerd.xlsx', 'DHerd_l3', 'D3Herd0',
                       age8_range, milking2_range)
-
     read_initial_data('Milk Yield per lactation.xlsx',
                       'MRD_1', 'MRD1', milking_range)
     read_initial_data('Milk Yield per lactation.xlsx',

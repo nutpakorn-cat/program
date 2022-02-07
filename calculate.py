@@ -341,6 +341,18 @@ def hello_world():
             if a > 2 and a <= 6 and t == 1:
                 model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)]
 
+
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age1_range):
+            if a > 1:
+                tmp1.append(d[kk('AHerd', a, t)])
+
+        model += lpSum(tmp1) >= 800
+
+        
+
+
     # Code
 
     model.solve(PULP_CBC_CMD(timeLimit=5))

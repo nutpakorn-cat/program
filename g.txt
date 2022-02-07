@@ -1,0 +1,40 @@
+LINKS1(time, product) 	: Y, S, MaxD, MinD;
+LINKS2(time, rawmat)  	: H, RC;
+LINKS3(time, customer)	: W, RS, RD;
+LINKS4(time, outsource)	: V, Z, OS, BC;
+
+! Herd Structure Indices;
+LINKS5(age1, time)						: AHerd, AX, AY;
+LINKS6(age2, time)						: BHerd, BX, BY, BZ, BZA, BZB, CB, BAbt;
+LINKS7(age3, time, gestation)					: CHerd, CX, CY, BAbort;
+LINKS8(age4, time, milking)					: D1Herd, D1X, D1Y, D1Z, DE1, E1Abort;
+LINKS9(age5, time, milkingE, gestation)			: E1Herd, E1X, E1Y, E1Abt;
+LINKS10(age6, time, milking2)					: D2Herd, D2X, D2Y, D2Z, DE2, E2Abort;
+LINKS11(age3, gestation)						: CHerd0, BAbort0;
+LINKS12(age3, time)						: DC;
+LINKS13(age4, milking)						: D1Herd0, D1Z0, D1Herd1, DHerd0total;
+LINKS14(age5, milkingE, gestation)				: E1Herd0, E1Abt0;
+LINKS15(age6, milking2)						: D2Herd0, D2Z0, D2Herd1, D2Herd0total, DE20;
+LINKS16(age5, time)						: ED1;
+LINKS17(age7, time, milkingE2, gestation)			: E2Herd, E2X, E2Y, E2Abt;
+LINKS18(age7, milkingE2, gestation)				: E2Herd0, E2Abt0;
+LINKS19(age7, time)						: ED2;
+LINKS20(age8, time, milking2)					: D3Herd, D3X, D3Y;
+LINKS21(age8, milking2)						: D3Herd0, D3Herd0total;
+LINKS23(age5, time, milkingE)					: DEAbt, E1AbSell;
+LINKS24(age7, time, milkingE2)					: DE2Abt, E2AbSell;
+
+GT >
+GE >=
+LT <
+LE <=
+EQ ==
+
+@for(time(t) :	@SUM(age1(a) | a #GT# 1 : AHerd(a,t)) >= 800 ;)
+
+sigma ai
+
+1 2 3 4 5 6
+
+
+1 + 2 + 3 + 4 + 5 + 6

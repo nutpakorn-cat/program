@@ -78,6 +78,22 @@ def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1
         second_variable = 0
         thrid_variable = 0
 
+def kk(name, a = -2, b = -2, c = -2, d = -2, e = -2):
+    name = name + "," + str(a)
+    
+    if (b != -2):
+        name = name + "," + str(b)
+    if (c != -2):
+        name = name + "," + str(c)
+    if (d != -2):
+        name = name + "," + str(d)
+    if (e != -2):
+        name = name + "," + str(e)
+
+    # print(name)
+    
+    return name
+
 
 @app.route('/')
 def hello_world():
@@ -248,6 +264,10 @@ def hello_world():
     reg(d, 'DR')
     reg(d, 'BAR')
 
+    reg(d, 'AM0')
+    reg(d, 'AM10')
+    reg(d, 'AM20')
+
     read_initial_data('Data_LP.xlsx', 'Cap', 'Cap')
     read_initial_data('Data_LP.xlsx', 'BV', 'BV')
     read_initial_data('MaxD_MinD.xlsx', 'MinD', 'MinD',
@@ -304,8 +324,24 @@ def hello_world():
     read_initial_data('Milk Yield per lactation.xlsx',
                       'MRE_2', 'MRE2', milkingE2_range)
 
+    # Code
+
     for t in full_array_range(time_range):
-        model += d['AM,' + str(t)] == d['AM1,' + str(t)] + d['AM2,' + str(t)]
+        model += d[kk('AM', t)] == d[kk('AM1', t)] + d[kk('AM2', t)]
+
+    model += d['AM0'] == d['AM10'] + d['AM20']
+
+    for t in full_array_range(time_range):
+        for a in full_array_range(age1_range):
+            if a == 1:
+                model += d[kk('AHerd', a, t)] == d[kk('AH', t)] + d[kk('AM', t)]
+
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a > 2 and a <= 6 and t == 1:
+                model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)]
+
+    # Code
 
     model.solve(PULP_CBC_CMD(timeLimit=5))
 

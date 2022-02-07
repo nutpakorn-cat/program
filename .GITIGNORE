@@ -1,2 +1,4 @@
 .DS_Store
 /backup
+/utilities/__pycache__
+utilities/__pycache__

@@ -376,14 +376,12 @@ def hello_world():
     for a in full_array_range(age1_range):
         for t in full_array_range(time_range):
             if a == at(2, age1_range) and t == at(1, time_range):
-                print(str(a) + " ABC " + str(t))
                 model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)] + d['AH0'] + d['AM0']
 
     # Initial AHerd structure
     for a in full_array_range(age1_range):
         for t in full_array_range(time_range):
             if a > at(6, age1_range) and t == at(1, time_range):
-                print("EIEIE " + kk('AHerd', a, t) + " " + kk('AY', a, t) +  " " + str(a) + " " +  str(at(6, age1_range)) + " t " + str(at(1, time_range)))
                 model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)] + d[kk('AX', a, t)] - d[kk('AY', a, t)]
     
     # AHerd Structure Balance

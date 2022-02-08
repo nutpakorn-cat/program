@@ -1,13 +1,12 @@
 from pulp import *
 from utilities.SizeHelper import *
 
-
 def add_variable_to_data(d, name):
 
     if (name in d):
         return True
 
-    d[name] = LpVariable(name, lowBound=0, cat='Integer')
+    d[name] = LpVariable(name, lowBound= 0)
     return False
 
 
@@ -15,12 +14,15 @@ def reg(d, name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1], la=[-1, -1], ma=[-1, -1]
 
     if (ia[0] == -1):
         has_already_added = add_variable_to_data(d, name)
+        # d[name] = LpVariable(name, lowBound=0, cat='Integer')
+        # d[name].setInitialValue(0.)
         if has_already_added:
             return
     elif (ja[0] == -1):
         for i in full_range(ia[0], ia[1]):
             varname = name.replace('$1', ',' + str(i))
             has_already_added = add_variable_to_data(d, varname)
+            # d[varname].setInitialValue(0.)
             if has_already_added:
                 continue
     elif (ka[0] == -1):
@@ -29,6 +31,7 @@ def reg(d, name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1], la=[-1, -1], ma=[-1, -1]
                 varname = name.replace(
                     '$1', ',' + str(i)).replace('$2', ',' + str(j))
                 has_already_added = add_variable_to_data(d, varname)
+                # d[varname].setInitialValue(0.)
                 if has_already_added:
                     continue
     elif (la[0] == -1):
@@ -38,6 +41,7 @@ def reg(d, name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1], la=[-1, -1], ma=[-1, -1]
                     varname = name.replace(
                         '$1', ',' + str(i)).replace('$2', ',' + str(j)).replace('$3', ',' + str(k))
                     has_already_added = add_variable_to_data(d, varname)
+                    # d[varname].setInitialValue(0.)
                     if has_already_added:
                         continue
     elif (ma[0] == -1):
@@ -48,6 +52,7 @@ def reg(d, name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1], la=[-1, -1], ma=[-1, -1]
                         varname = name.replace('$1', ',' + str(i)).replace('$2', ',' + str(
                             j)).replace('$3', ',' + str(k)).replace('$4', ',' + str(l))
                         has_already_added = add_variable_to_data(d, varname)
+                        # d[varname].setInitialValue(0.)
                         if has_already_added:
                             continue
     else:
@@ -60,5 +65,6 @@ def reg(d, name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1], la=[-1, -1], ma=[-1, -1]
                                 '$3', ',' + str(k)).replace('$4', ',' + str(l)).replace('$5', ',' + str(m))
                             has_already_added = add_variable_to_data(
                                 d, varname)
+                            # d[varname].setInitialValue(0.)
                             if has_already_added:
                                 continue

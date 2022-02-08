@@ -1,4 +1,3 @@
-from time import time
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -11,7 +10,7 @@ from utilities.ModelHelper import *
 
 app = Flask(__name__)
 
-model = LpProblem('model 2', LpMaximize)
+model = LpProblem('model', LpMaximize)
 
 d = dict()
 
@@ -38,7 +37,6 @@ milking3_range = [1, 10]
 
 time_range = [1, 36]
 
-
 def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1, -1], ka=[-1, -1]):
 
     global model
@@ -48,25 +46,45 @@ def read_initial_data(file_name, column_name, variable_name, ia=[-1, -1], ja=[-1
     second_variable = 0
     thrid_variable = 0
 
+    row_size = 0
+    column_size = 0
+
+    if (ia[0] != -1 and ja[0] == -1):
+        for row_index, row in df.iterrows():
+            for column_index, value in enumerate(row):
+                column_size = column_size + 1
+            break
+        
+        for row_index, row in df.iterrows():
+            row_size = row_size + 1
+
     for row_index, row in df.iterrows():
         for column_index, value in enumerate(row):
             if (ia[0] == -1):
                 model += d[variable_name] == df[column_index][row_index]
-                print("SET " + variable_name + " = " +
-                      str(df[column_index][row_index]))
+                # print("SET " + variable_name + " = " +
+                #       str(df[column_index][row_index]))
             elif (ja[0] == -1):
-                model += d[variable_name + ',' +
-                           str(ia[0] + row_index)] == df[column_index][row_index]
-                print("SET " + variable_name + ',' +
-                      str(ia[0] + row_index) + " = " + str(df[column_index][row_index]))
+                if (row_size >= column_size):
+
+                    model += d[variable_name + ',' +
+                            str(ia[0] + row_index)] == df[column_index][row_index]
+                    print("SET " + variable_name + ',' +
+                        str(ia[0] + row_index) + " = " + str(df[column_index][row_index]))
+                else:
+
+                    model += d[variable_name + ',' +
+                            str(ia[0] + column_index)] == df[column_index][row_index]
+                    print("SET " + variable_name + ',' +
+                        str(ia[0] + column_index) + " = " + str(df[column_index][row_index]))
             elif (ka[0] == -1):
                 model += d[variable_name + ',' + str(ia[0] + row_index) + ',' + str(
                     ja[0] + column_index)] == df[column_index][row_index]
-                print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
-                    ja[0] + column_index) + " = " + str(df[column_index][row_index]))
+                # print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
+                #     ja[0] + column_index) + " = " + str(df[column_index][row_index]))
             else:
-                print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
-                    ja[0] + second_variable) + ',' + str(ka[0] + thrid_variable) + " = " + str(df[column_index][row_index]))
+                # print("SET " + variable_name + ',' + str(ia[0] + row_index) + ',' + str(
+                #     ja[0] + second_variable) + ',' + str(ka[0] + thrid_variable) + " = " + str(df[column_index][row_index]))
                 model += d[variable_name + ',' + str(ia[0] + row_index) + ',' + str(
                     ja[0] + second_variable) + ',' + str(ka[0] + thrid_variable)] == df[column_index][row_index]
 
@@ -93,6 +111,13 @@ def kk(name, a = -2, b = -2, c = -2, d = -2, e = -2):
     # print(name)
     
     return name
+
+def at(value, input_range):
+
+    if value <= 0:
+        return input_range[0]
+
+    return input_range[0] + value - 1
 
 
 @app.route('/')
@@ -268,6 +293,10 @@ def hello_world():
     reg(d, 'AM10')
     reg(d, 'AM20')
 
+    reg(d, 'AH0')
+    reg(d, 'BH0')
+    reg(d, 'AHerdTotal')
+
     read_initial_data('Data_LP.xlsx', 'Cap', 'Cap')
     read_initial_data('Data_LP.xlsx', 'BV', 'BV')
     read_initial_data('MaxD_MinD.xlsx', 'MinD', 'MinD',
@@ -324,7 +353,10 @@ def hello_world():
     read_initial_data('Milk Yield per lactation.xlsx',
                       'MRE_2', 'MRE2', milkingE2_range)
 
-    # Code
+    # Code 131
+
+# Age 0 - 14
+    # calf with 0 month
 
     for t in full_array_range(time_range):
         model += d[kk('AM', t)] == d[kk('AM1', t)] + d[kk('AM2', t)]
@@ -333,35 +365,112 @@ def hello_world():
 
     for t in full_array_range(time_range):
         for a in full_array_range(age1_range):
-            if a == 1:
+            if a == at(1, age1_range):
                 model += d[kk('AHerd', a, t)] == d[kk('AH', t)] + d[kk('AM', t)]
 
     for a in full_array_range(age1_range):
         for t in full_array_range(time_range):
-            if a > 2 and a <= 6 and t == 1:
+            if a > at(2, age1_range) and a <= at(6, age1_range) and t == at(1, time_range):
                 model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)]
+    
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a == at(2, age1_range) and t == at(1, time_range):
+                print(str(a) + " ABC " + str(t))
+                model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)] + d['AH0'] + d['AM0']
 
+    # Initial AHerd structure
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a > at(6, age1_range) and t == at(1, time_range):
+                print("EIEIE " + kk('AHerd', a, t) + " " + kk('AY', a, t) +  " " + str(a) + " " +  str(at(6, age1_range)) + " t " + str(at(1, time_range)))
+                model += d[kk('AHerd', a, t)] == d[kk('AHerd0', a - 1)] + d[kk('AX', a, t)] - d[kk('AY', a, t)]
+    
+    # AHerd Structure Balance
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(2, age1_range) and a <= at(6, age1_range) and t > at(1, time_range):
+                model += d[kk('AHerd', a, t)] == d[kk('AHerd', a-1, t-1)]
+    
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(6, age1_range) and t > at(1, time_range):
+                model += d[kk('AHerd', a, t)] == d[kk('AHerd', a-1, t-1)] + d[kk('AX', a, t)] - d[kk('AY', a, t)]
+    
+    # Not buy between 0 - 5 months
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(1, age1_range) and a < at(6, age1_range):
+                model += d[kk('AX', a, t)] == 0
+    
+    # Not sell between 0 - 5 months
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(1, age1_range) and a < at(6, age1_range):
+                model += d[kk('AY', a, t)] == 0
+
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(6, age1_range):
+                model += d[kk('AX', a, t)] <= 10
+    
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a >= at(6, age1_range):
+                model += d[kk('AY', a, t)] <= 100
+                
+    # Change status
+    for a in full_array_range(age1_range):
+        if a == at(15, age1_range):
+            for t in full_array_range(time_range):
+                if t == at(1, time_range):
+                    model += d[kk('AHerd0', a)] + d[kk('AX', a, t)] - d[kk('AY', a, t)] == d['BH0']
+    
+    for a in full_array_range(age1_range):
+        for t in full_array_range(time_range):
+            if a == at(15, age1_range):
+                model += d[kk('AHerd', a, t)] == d[kk('BH', t)]
+
+    # Boundary
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age1_range):
+            if a > at(1, age1_range):
+                tmp1.append(d[kk('AHerd', a, t)])
+
+        model += lpSum(tmp1) <= 1500
 
     for t in full_array_range(time_range):
         tmp1 = []
         for a in full_array_range(age1_range):
-            if a > 1:
+            if a > at(1, age1_range):
                 tmp1.append(d[kk('AHerd', a, t)])
 
         model += lpSum(tmp1) >= 800
 
-        
+    tmp1 = []
 
+    for a in full_array_range(age1_range):
+        tmp1.append(d[kk('AHerd0', a)])
+
+    model += d['AHerdTotal'] == lpSum(tmp1)
+
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age1_range):
+            tmp1.append(d[kk('AHerd', a, t)])
+       
+        model += d[kk('Atotal', t)] == lpSum(tmp1)
 
     # Code
 
-    model.solve(PULP_CBC_CMD(timeLimit=5))
+    model.solve(PULP_CBC_CMD(timeLimit=None, warmStart= 1))
 
     output = ''
 
     for v in model.variables():
-        # if v.varValue == 0:
-        #     continue
+        if v.varValue == 0:
+            continue
 
         # if v.varValue is None:
         #     continue

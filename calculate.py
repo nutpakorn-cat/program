@@ -119,6 +119,10 @@ def at(value, input_range):
 
     return input_range[0] + value - 1
 
+BR = 0.7
+FR = 0.5
+DR = 0.8
+BAR = 0.05
 
 @app.route('/')
 def hello_world():
@@ -459,6 +463,99 @@ def hello_world():
             tmp1.append(d[kk('AHerd', a, t)])
        
         model += d[kk('Atotal', t)] == lpSum(tmp1)
+
+# Age 15 - 18;
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if t == at(1, time_range):
+                model += d[kk('BX', a, t)] <= 50
+    
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if a < at(4, age2_range) and t == at(1, time_range):
+                model += d[kk('BY', a, t)] <= 20
+
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if t > at(1, time_range):
+                model += d[kk('BX', a, t)] <= 50
+
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if a < at(4, age2_range) and t > at(1, time_range):
+                model += d[kk('BY', a, t)] <= 20
+
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            model += d[kk('BHerd', a, t)] >= 100
+
+# Heifers with 15 M change from calf
+    # Initial 
+    for a in full_array_range(age2_range):
+        if a == at(1, age2_range):
+            for t in full_array_range(time_range):
+                if t == at(1, time_range):
+                    model += d[kk('BHerd', a, t)] == d['BH0'] + d[kk('BX', a, t)] - d[kk('BY', a, t)] - d[kk('BZ', a, t)]
+        
+    # Change
+    for a in full_array_range(age2_range):
+        if a == at(1, age2_range):
+            for t in full_array_range(time_range):
+                if t > at(1, time_range):
+                    model += d[kk('BHerd', a, t)] == d[kk('BH', t-1)] + d[kk('BX', a, t)] - d[kk('BY', a, t)] - d[kk('BZ', a, t)]
+    
+# Herd Structure Balance
+    # Initial
+    for a in full_array_range(age2_range):
+        if a > at(1, age2_range):
+            for t in full_array_range(time_range):
+                if t == at(1, time_range):
+                    model += d[kk('BHerd', a, t)] == d[kk('BHerd1', a-1)] + d[kk('BX', a, t)] - d[kk('BY', a, t)]
+    
+    for a in full_array_range(age2_range):
+        if a > at(1, age2_range):
+            for t in full_array_range(time_range):
+                if t > at(1, time_range):
+                    model += d[kk('BHerd', a, t)] == d[kk('BHerd', a-1, t-1)] + d[kk('BX', a, t)] - d[kk('BY', a, t)]
+        
+# AI Success
+
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            model += d[kk('BZ', a, t)] == BR * d[kk('BHerd', a, t)]
+    
+    for a in full_array_range(age2_range):
+        model += d[kk('BZ0', a)] == BR * d[kk('BHerd0', a)]
+
+    for a in full_array_range(age2_range):
+        model += d[kk('BHerd1', a)] == d[kk('BHerd0', a)] - d[kk('BZ0', a)]
+
+# boundaries
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age2_range):
+            tmp1.append(d[kk('BHerd', a, t)])
+        model += lpSum(tmp1) <= 1000
+
+# Change stucture
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if a >= at(1, age2_range) and t >= at(1, age2_range):
+                model += d[kk('BZ', a, t)] - BAR * d[kk('BZ', a, t)] == d[kk('CB', a, t)]
+
+    for a in full_array_range(age2_range):
+        for t in full_array_range(time_range):
+            if t == at(1, time_range):
+                model += d[kk('BZ0', a)] - BAR * d[kk('BZ0', a)] == d[kk('CB0', a)]
+
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age2_range):
+            tmp1.append(d[kk('BHerd', a, t)])
+        model += d[kk('BTotal', t)] == lpSum(tmp1)
+
+
+
 
     # Code
 

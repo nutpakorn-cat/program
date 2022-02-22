@@ -554,6 +554,238 @@ def hello_world():
             tmp1.append(d[kk('BHerd', a, t)])
         model += d[kk('BTotal', t)] == lpSum(tmp1)
 
+# Heifers with first pregnant
+    # Boundary of Buy-Sell
+    # a = 15
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(1,age3_range) and b == at(1,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 30
+                    model += d[kk('CHerd',a,t,b)] >= 10
+    
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(1,age3_range) and b > at(1,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # a = 16
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(2,age3_range) and b <= at(2,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 30
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(2,age3_range) and b > at(2,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+    
+    # a = 17
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(3,age3_range) and b <= at(3,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 30
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(3,age3_range) and b > at(3,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # a = 18
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(4,age3_range) and b <= at(4,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+    
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(4,age3_range) and b > at(4,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # a = 19
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(5,age3_range) and b <= at(5,gestation_range) and b >= at(2,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(5,age3_range) and b > at(5,gestation_range) and b < at(2,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # a = 20
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(6,age3_range) and b <= at(6,gestation_range) and b >= at(3,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <=20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(6,age3_range) and b > at(6,gestation_range) and b < at(3,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+    
+    # a = 21
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(7,age3_range) and b <= at(7,gestation_range) and b >= at(4,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(7,age3_range) and b > at(7,gestation_range) and b < at(4,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0 
+
+    # a = 22
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(8,age3_range) and b <= at(8,gestation_range) and b >= at(5,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10 
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(8,age3_range) and b > at(8,gestation_range) and b < at(5,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0 
+
+    # a = 23
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(8,age3_range) and b <= at(8,gestation_range) and b >= at(5,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10 
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(8,age3_range) and b == at(9,gestation_range) and b < at(5,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0 
+
+    # a = 24
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(9,age3_range) and b <= at(9,gestation_range) and b >= at(6,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(9,age3_range) and b > at(9,gestation_range) and b < at(6,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0 
+    
+    # a = 25
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(10,age3_range) and b <= at(9,gestation_range) and b >= at(7,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(10,age3_range) and b > at(9,gestation_range) and b < at(7,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0 
+
+    # a = 26
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(11,age3_range) and b <= at(9,gestation_range) and b >= at(8,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(11,age3_range) and b > at(9,gestation_range) and b < at(8,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # a = 27 
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(12,age3_range) and b <= at(9,gestation_range) and b >= at(9,gestation_range):
+                    model += d[kk('CX',a,t,b)] <= 150
+                    model += d[kk('CY',a,t,b)] <= 20
+                    model += d[kk('CHerd',a,t,b)] >= 10
+
+    for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            for b in full_array_range(gestation_range):
+                if a == at(12,age3_range) and b > at(9,gestation_range) and b < at(9,gestation_range):
+                    model += d[kk('CX',a,t,b)] == 0
+                    model += d[kk('CY',a,t,b)] == 0
+                    model += d[kk('CHerd',a,t,b)] == 0
+
+    # change from Heifers
+       
+            
+
+
+
+
+
+
 
 
 

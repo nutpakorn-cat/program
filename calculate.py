@@ -778,8 +778,53 @@ def hello_world():
                     model += d[kk('CHerd',a,t,b)] == 0
 
     # change from Heifers
-       
-            
+    for a in full_array_range(age2_range):
+        #for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            if t == at(1,time_range):
+                for b in full_array_range(gestation_range):
+                    if b == at(1,gestation_range):
+                        model += d[kk('CHerd',a,t,b)] == d[kk('CB0',a)] + d[kk('CX',a,t,b)] - d[kk('CY',a,t,b)]
+
+    for a in full_array_range(age2_range):
+        #for a in full_array_range(age3_range):
+        for t in full_array_range(time_range):
+            if t > at(1,time_range):
+                for b in full_array_range(gestation_range):
+                    if b == at(1,gestation_range):
+                        model += d[kk('CHerd',a,t,b)] == d[kk('CB',a,t-1)] + d[kk('CX',a,t,b)] - d[kk('CY',a,t,b)] 
+    
+    # Herd Structure Balance
+    # Initial
+    for a in full_array_range(age3_range):
+        if a > at(1,age3_range):
+            for t in full_array_range(time_range):
+                if t == at(1,time_range):
+                    for b in full_array_range(gestation_range):
+                        if b > at(1,gestation_range):
+                            model += d[kk('CHerd',a,t,b)] == d[kk('CHerd0',a-1,b-1)] + d[kk('CX',a,t,b)] - d[kk('CY',a,t,b)]
+
+    for a in full_array_range(age3_range):
+        if a > at(1,age3_range):
+            for t in full_array_range(time_range):
+                if t > at(1,time_range):
+                    for b in full_array_range(gestation_range):
+                        if b > at(1,gestation_range):
+                            model += d[kk('CHerd',a,t,b)] == d[kk('CHerd',a-1,t-1,b-1)] + d[kk('CX',a,t,b)] - d[kk('CY',a,t,b)]  
+
+    # Boundaries
+    for t in full_array_range(time_range):
+        tmp1 = []
+        for a in full_array_range(age3_range):
+            tmp2 = []
+            for b in full_array_range(gestation_range):
+                if b < at(9,gestation_range):
+                    tmp2.append(d[kk('CHerd',a,t,b)])
+            tmp1.append(tmp2)
+
+        model += lpSum(tmp1) <= 1000
+    
+        
 
 
 
